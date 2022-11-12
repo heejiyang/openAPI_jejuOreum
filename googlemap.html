@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            #map {
+                height: 400px;
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <h3 id="leehojun">My Google Maps Demo</h3>
+        <!-- 이것만 있으면 map을 쓸 수있다. -->
+        <div id="map"></div>
+        <script src="marker.js"></script>
+        <script>
+            const data = marker;
+            async function initMap() {
+                const jeju = { lat: 33.3616658, lng: 126.5204118 };
+                let pageNum = 1;
+                const data = await fetch(
+                    `https://api.odcloud.kr/api/15096996/v1/uddi:6738a90c-ec96-4245-a187-9528cea62904?page=${pageNum}&perPage=10&serviceKey=jcYFh5SvEClxuZ%2FMsh2fRsC%2FPwSAuU%2FeZ4fKPkjtXRcPMhb29kAvZx1ogh84ZLQVLz0dOhwinQTY0uYL88X8Dg%3D%3D`
+                )
+                    .then ((r) => r.json())
+                    .then((data) => {
+                        return data;
+                    })
+                };
+
+                data.forEach(item => {
+                        new google.maps.Marker({
+                            position: { let: item.위도, log: item.경도 },
+                            map: map,
+                        });
+                }
+                const map = new google.maps.Map(
+                    document.getElementById("map"),
+                    {
+                        zoom: 11,
+                        center: jeju,
+                    }
+                )
+            };
+                // new google.maps.Marker({
+                //     position: jeju,
+                //     map: map,
+                // });
+
+                // new google.maps.Marker({
+                //     position: { lat: data[0]["lat"], lng: data[0]["lng"] },
+                //     map: map,
+                // });
+
+                // new google.maps.Marker({
+                //     position: { lat: data[1]["lat"], lng: data[1]["lng"] },
+                //     map: map,
+                // });
+
+                // new google.maps.Marker({
+                //     position: { lat: data[2]["lat"], lng: data[2]["lng"] },
+                //     map: map,
+                // });
+
+                // new google.maps.Marker({
+                //     position: { lat: data[3]["lat"], lng: data[3]["lng"] },
+                //     map: map,
+                // });
+
+                // 새롭게 생성한 마커
+                // new google.maps.Marker({
+                // position: { lat: 33.5104135, lng: 126.4913534 }, map: map,
+                // });
+        </script>
+        <script
+            async
+            defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPSPhwg2V1JiJMU-nMqimPndi68Ia6pvk&callback=initMap"
+        ></script>
+    </body>
+</html>
