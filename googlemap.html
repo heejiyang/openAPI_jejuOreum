@@ -14,67 +14,53 @@
         <div id="map"></div>
         <script src="marker.js"></script>
         <script>
-            const data = marker;
-            async function initMap() {
-                const jeju = { lat: 33.3616658, lng: 126.5204118 };
+            const getOreumData = async () => {
                 let pageNum = 1;
-                const data = await fetch(
+                const response = await fetch(
                     `https://api.odcloud.kr/api/15096996/v1/uddi:6738a90c-ec96-4245-a187-9528cea62904?page=${pageNum}&perPage=10&serviceKey=jcYFh5SvEClxuZ%2FMsh2fRsC%2FPwSAuU%2FeZ4fKPkjtXRcPMhb29kAvZx1ogh84ZLQVLz0dOhwinQTY0uYL88X8Dg%3D%3D`
                 )
                     .then ((r) => r.json())
-                    .then((data) => {
-                        return data;
+                    .then((response) => {
+                        return response;
                     })
-                };
 
+                return response.data.map(item => {
+                    return { lat : Number(item.위도), lng: Number(item.경도) }
+                });
+            }
+
+
+        function initMap() {
+            const jeju = { lat: 33.3616658, lng: 126.5204118 };
+            const map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 11,
+                center: jeju,
+            })
+
+            new google.maps.Marker({
+                position: jeju,
+                map: map,
+            })
+
+            // getOreumData가 promise객체를 god(위도와 경도)에 반환해주는 것이다.
+            const god = getOreumData();
+
+            god.then(data =>{
                 data.forEach(item => {
-                        new google.maps.Marker({
-                            position: { let: item.위도, log: item.경도 },
-                            map: map,
-                        });
-                }
-                const map = new google.maps.Map(
-                    document.getElementById("map"),
-                    {
-                        zoom: 11,
-                        center: jeju,
-                    }
-                )
-            };
-                // new google.maps.Marker({
-                //     position: jeju,
-                //     map: map,
-                // });
-
-                // new google.maps.Marker({
-                //     position: { lat: data[0]["lat"], lng: data[0]["lng"] },
-                //     map: map,
-                // });
-
-                // new google.maps.Marker({
-                //     position: { lat: data[1]["lat"], lng: data[1]["lng"] },
-                //     map: map,
-                // });
-
-                // new google.maps.Marker({
-                //     position: { lat: data[2]["lat"], lng: data[2]["lng"] },
-                //     map: map,
-                // });
-
-                // new google.maps.Marker({
-                //     position: { lat: data[3]["lat"], lng: data[3]["lng"] },
-                //     map: map,
-                // });
-
-                // 새롭게 생성한 마커
-                // new google.maps.Marker({
-                // position: { lat: 33.5104135, lng: 126.4913534 }, map: map,
-                // });
-        </script>
-        <script
-            async
-            defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPSPhwg2V1JiJMU-nMqimPndi68Ia6pvk&callback=initMap"
-        ></script>
+                    console.log(item);
+                    new google.maps.Marker({
+                        // item이 위도와 경도
+                        position: item,
+                        map: map,
+                    })
+                })
+            })
+        }
+    </script>
+    <script
+        async
+        defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPSPhwg2V1JiJMU-nMqimPndi68Ia6pvk&callback=initMap"
+    ></script>
     </body>
 </html>
